@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr" class="client-nojs">
+<head>
+	<meta charset="UTF-8" />
+	<title>Guitar Open C Tunning Demo 1</title>
+	<meta name="generator" content="JimmyMusicCollection" />
+	<meta name="author" content="" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<style type="text/css">
+		.mobile_debug {
+			width: 600px;
+			height: 800px;
+			border: 1px black solid;
+		}
+		body {
+			background: #A29CFC;
+			text-align:center;
+		}
+		.hide { display: none; }
+		#ProgressWrapper {
+			margin: auto;
+			width: 570px;
+			height: 16px;
+			padding: 0;
+		}
+		.ProgressBar {
+			width: 570px;
+			height: 12px;
+			background: blue;
+			margin: 2px 0;
+		}
+		#ProgressBarInner {
+			width: 0;
+			background: #66ffcc;
+			margin: 0;
+			display: block;
+		}
+		#ProgressButton {
+			position: relative;
+			top: -16px;
+			left: 0;
+			margin: 0 0;
+			width: 16px;
+			height: 16px;
+			background: #ff0000;
+			display: block;
+		}
+		#AlbumArt {
+			width: 240px;
+			height: 240px;
+			border: #FFFFFF solid 5px;
+			position: relative;
+			left: 50%;
+			margin-left: -120px;
+			padding: 0;
+		}
+		#PlayIcon {
+			display: block;
+			position: relative;
+			width: 96px; height: 96px;
+			left: 50%; top: 50%;
+			margin-left: -48px; margin-top: -48px;
+			padding: 0;
+			cursor: pointer;
+		}
+		#PlayIcon span {
+			display: block;
+			background: url('play.png') no-repeat center center;
+			opacity: 0.5;
+		}
+		.IsPlaying#PlayIcon {
+			background: url('pause.png') no-repeat center center;
+		}
+	</style>
+	<script type="text/javascript">
+		var Controls = {
+			player: null,
+			Initialize: function() {
+				this.player = document.getElementById("player");
+				this.player.addEventListener("timeupdate", function() {
+					Controls.ProgressBar.progress(this.currentTime/this.duration);
+				});
+
+				this.player.addEventListener("play", this.play);
+				this.player.addEventListener("waiting", this.play);
+				this.player.addEventListener("pause", this.pause);
+
+				this.player.addEventListener("ended", function() { Controls.pause();/* Controls.ProgressBar.progress(0); */});
+				this.PlayIcon.Initialize();
+				this.ProgressBar.Initialize();
+				this.VolBar.Initialize();
+			},
+
+			play: function() { Controls.PlayIcon.SetPlaying(); },
+			pause: function() { Controls.PlayIcon.SetStopped(); },
+
+			PlayIcon: {
+				dom: null,
+				Initialize: function() {
+					this.dom = document.getElementById("PlayIcon");
+					this.dom.onclick = function() {
+						Controls.player.paused ? Controls.player.play() : Controls.player.pause();
+					};
+				},
+				SetPlaying: function() { this.dom.className = "IsPlaying"; },
+				SetStopped: function() { this.dom.className = ""; }
+			},
+
+			ProgressBar: {
+				barWidth: 570,
+				dom: null,
+				Initialize: function() {
+					this.dom = document.getElementById("ProgressBarInner");
+					this.button.Initialize();
+				},
+				progress: function(k) {
+					this.dom.style.width = (k*this.barWidth)+"px";
+					this.button.progress(k);
+				},
+
+				button: {
+					buttonlessWidth: 554,
+					dom: null,
+					Initialize: function() {
+						this.dom = document.getElementById("ProgressButton");
+					},
+					progress: function(k) {
+						this.dom.style.left = (k*this.buttonlessWidth)+"px";
+					},
+				}
+			},
+
+			VolBar: {
+				Initialize: function() {},
+				button: {}
+			},
+			enable: function() {
+				//
+			}
+		};
+		window.onload = function() {
+			Controls.Initialize();
+		}
+	</script>
+</head>
+
+<body class="mobile_debug">
+
+<p style="height: 20%"></p>
+<p id="AlbumArt">
+	<a id="PlayIcon" class=""><span></span></a>
+</p>
+
+<h1></h1>
+
+<p style="height: 10%"></p>
+
+<audio preload="preload" id="player" controls="controls">
+	<source src="song.ogg" type="audio/ogg">
+	<source src="song.mp3" type="audio/mpeg">
+	<source src="song.wav" type="audio/x-wav">
+</audio>
+
+<p style="height: 5%"></p>
+
+<div id="ProgressWrapper">
+	<div id="ProgressBar" class="ProgressBar">
+		<a id="ProgressBarInner" class="ProgressBar"></a>
+	</div>
+	<a id="ProgressButton" class=""></a>
+</div>
+</body>
+</html>
